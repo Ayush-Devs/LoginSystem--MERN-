@@ -33,6 +33,11 @@ app.get('/', (req, res) => {
 /** API Routes */
 app.use('/api', router);
 
+// 404 Error Handler: Catch all undefined routes and serve a 404 page
+app.use((req, res, next) => {
+    res.status(404).sendFile(path.join(__dirname, '404.html'));
+});
+
 /** Start server only when we have a valid connection */
 connect().then(() => {
     try {
