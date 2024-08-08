@@ -2,8 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
+import { fileURLToPath } from 'url';  // Import fileURLToPath for URL-to-path conversion
 import connect from './database/conn.js';
 import router from './router/route.js';
+
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -13,10 +19,11 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.disable('x-powered-by'); // less hackers know about our stack
 
-const port = process.env.PORT || 3000;
+const port = 8080; 
+
 
 /** Serve static files from the React app */
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 /** HTTP GET Request */
 app.get('/', (req, res) => {
@@ -25,11 +32,6 @@ app.get('/', (req, res) => {
 
 /** API Routes */
 app.use('/api', router);
-
-/** All other routes should serve the React app */
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
 
 /** Start server only when we have a valid connection */
 connect().then(() => {
