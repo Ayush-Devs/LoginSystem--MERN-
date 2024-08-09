@@ -2,10 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
-import { fileURLToPath } from 'url';  // Import fileURLToPath for URL-to-path conversion
+import { fileURLToPath } from 'url';
 import connect from './database/conn.js';
 import router from './router/route.js';
-
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +19,6 @@ app.use(morgan('tiny'));
 app.disable('x-powered-by'); // less hackers know about our stack
 
 const port = 8080; 
-
 
 /** Serve static files from the React app */
 app.use(express.static(path.join(__dirname, '../client/build')));
@@ -37,6 +35,9 @@ app.use('/api', router);
 app.use((req, res, next) => {
     res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
+
+// Export the app as an ES module
+export default app;
 
 /** Start server only when we have a valid connection */
 connect().then(() => {
