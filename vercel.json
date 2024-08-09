@@ -1,0 +1,4 @@
+{
+    "builds":[{"src":"./server/server.js"}],
+    "sources":[{"src":"/(.*)", "dest":"/"}]
+  }
