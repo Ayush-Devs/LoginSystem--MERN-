@@ -5,13 +5,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connect from './database/conn.js';
 import router from './router/route.js';
+import config from './config.js';
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 8080; // Ensure the port is defined with a fallback
+const port = config.PORT; // Use PORT from config
 
 /** Middlewares */
 app.use(express.json());
@@ -40,13 +41,10 @@ export default app;
 
 /** Start server only when we have a valid database connection */
 connect().then(() => {
-    try {
-        app.listen(port, () => {
-            console.log(`Server connected to http://localhost:${port}`);
-        });
-    } catch (error) {
-        console.log("Error starting the server:", error);
-    }
+    app.listen(port, () => {
+        console.log(`Server connected to http://localhost:${port}`);
+    });
+    console.log('Database Connected'); // Only logged once when the server starts
 }).catch(error => {
     console.log("Invalid database connection:", error);
 });
